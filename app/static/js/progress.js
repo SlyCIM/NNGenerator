@@ -1,0 +1,40 @@
+let app = angular.module("app", []);
+app.controller("ctrl", function ($scope, $http) {
+
+    $scope.in_progress = true;
+    $scope.task_id = -1;
+    $scope.produced = 0;
+    $scope.target = 0;
+    $scope.dataset_size = 0;
+
+    $scope.get_results = function(){
+        if($scope.task_id == -1)
+            return;
+        $http({
+                method: 'GET',
+                url: '/task_info/' + $scope.task_id,
+                async:false,
+            }).then(function success (response) {
+                $scope.loops += 1;
+                $scope.produced = response.data.produced;
+                $scope.target = response.data.target;
+                $scope.dataset_size = response.data.dataset_size;
+                document.getElementById('bar').style.width = (($scope.produced / $scope.target) * 100) + '%';
+
+                if($scope.produced == $scope.target){
+                    clearInterval($scope.timer);
+                    $scope.in_progress = false;
+                    if ($scope.loops > 1)
+                        window.location.reload(false);
+                }
+            });
+    }
+
+    $scope.start_progress = function(task_id){
+	    $scope.task_id = task_id;
+	    $scope.get_results();
+	    $scope.timer = setInterval($scope.get_results, 1000);
+	}
+
+});
+
