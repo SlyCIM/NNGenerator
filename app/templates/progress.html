@@ -7,7 +7,7 @@
 {% block content %}
 <div class="main_menu" ng-app="app" ng-controller="ctrl" ng-init="start_progress({{task_id}});">
     {% raw %}
-        <span class="info_label" ng-show="!in_progress" ng-cloak>Dataset saved to "datasets/dataset-{{dataset_size}}.csv</span>
+        <span class="info_label" ng-show="!in_progress" ng-cloak>Dataset saved</span>
     {% endraw %}
     <br>
     <div ng-show="in_progress" style="width:100%;" ng-cloak>

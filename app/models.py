@@ -6,3 +6,4 @@ class Task(db.Model):
     produced = db.Column(db.Integer)
     target = db.Column(db.Integer)
     dataset_size = db.Column(db.Integer)
+    dataset_filename = db.Column(db.String(128))

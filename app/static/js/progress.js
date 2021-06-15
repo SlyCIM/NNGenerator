@@ -17,11 +17,12 @@ app.controller("ctrl", function ($scope, $http) {
             }).then(function success (response) {
                 $scope.loops += 1;
                 $scope.produced = response.data.produced;
+                $scope.task_id = response.data.task_id;
                 $scope.target = response.data.target;
                 $scope.dataset_size = response.data.dataset_size;
                 document.getElementById('bar').style.width = (($scope.produced / $scope.target) * 100) + '%';
-
                 if($scope.produced == $scope.target){
+                    window.location.href='/dataset/' + $scope.task_id;
                     clearInterval($scope.timer);
                     $scope.in_progress = false;
                     if ($scope.loops > 1)

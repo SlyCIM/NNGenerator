@@ -8,24 +8,24 @@ from app.models import Task
 
 
 def randomize(rMin, rMax, fiMin, fiMax, gMin, gMax, i, h):
-    # rObj = np.random.uniform(rMin, rMax)
-    # fiObj = np.random.uniform(fiMin, fiMax)
-    # gObj = np.random.uniform(gMin, gMax)
-    # xObj = rObj * math.cos(fiObj)
-    # yObj = rObj * math.sin(fiObj)
+    rObj = np.random.uniform(rMin, rMax)
+    fiObj = np.random.uniform(fiMin, fiMax)
+    gObj = np.random.uniform(gMin, gMax)
+    xObj = rObj * math.cos(fiObj)
+    yObj = rObj * math.sin(fiObj)
     # Генерация для диагонального движения с углом 45 градусов
 
-    xObj = -550 + i + 0.01
-    yObj = rMax - i
-    rObj = math.sqrt(pow(xObj, 2) + pow(yObj, 2))
+    # xObj = -550 + i + 0.01
+    # yObj = rMax - i
+    # rObj = math.sqrt(pow(xObj, 2) + pow(yObj, 2))
+    # # if xObj < 0:
+    # #     fiObj = math.atan(abs(xObj) / yObj) + math.pi / 2
+    # # else:
+    # #     fiObj = math.atan(xObj / yObj)
+    # fiObj = math.atan(yObj / abs(xObj))
     # if xObj < 0:
-    #     fiObj = math.atan(abs(xObj) / yObj) + math.pi / 2
-    # else:
-    #     fiObj = math.atan(xObj / yObj)
-    fiObj = math.atan(yObj / abs(xObj))
-    if xObj < 0:
-        fiObj = math.pi - fiObj
-    gObj = 4
+    #     fiObj = math.pi - fiObj
+    # gObj = 4
     return xObj, yObj, gObj, fiObj, rObj
 
 
@@ -83,27 +83,27 @@ def generate(h, l, m, n, rMin, rMax, fiMin, fiMax, gMin, gMax, lambd, gamma, tas
         while not flag:
             xObj, yObj, gObj, fiObj, rObj = randomize(rMin, rMax, fiMin, fiMax, gMin, gMax, precedents, h)
             if not valid(xObj, yObj, gObj, h, l):
-                flag2 = True
-                #continue
-            if not flag2:
-                L_a, R_a, L_b, R_b = count(xObj, yObj, h, gObj, m)
-                flag = L_a != R_a
-            flag = True
+                #flag2 = True
+                continue
+            #if not flag2:
+            L_a, R_a, L_b, R_b = count(xObj, yObj, h, gObj, m)
+            flag = L_a != R_a
+            # flag = True
             # if flag2:
             #     flag = True
             # else:
             #     flag = L_a != R_a
         precedents += 1
-        print(precedents)
+        #print(precedents)
         Task.query.get(task_id).produced += 1
         db.session.commit()
-        if flag2:
-            continue
+        # if flag2:
+        #     continue
 
-        if rObj < rMin:
-            Task.query.get(task_id).produced = n
-            db.session.commit()
-            precedents = n
+        # if rObj < rMin:
+        #     Task.query.get(task_id).produced = n
+        #     db.session.commit()
+        #     precedents = n
         for j in range(L_a, R_a + 1):
             beta_A[j] = 1
         for j in range(L_b, R_b + 1):
@@ -116,21 +116,21 @@ def generate(h, l, m, n, rMin, rMax, fiMin, fiMax, gMin, gMax, lambd, gamma, tas
         fi = math.pi / 2 + (1 / gamma) * math.log((1-a) / a)
         M.append({'beta_A': beta_A, 'beta_B': beta_B, 'd': d, 'a': a, 'r': r, 'fi': fi, 'rObj': rObj, 'fiObj': fiObj,
                   'gObj': gObj, 'xObj': xObj, 'yObj': yObj, 'h': h, 'l': l})
+    save_to_file(M, m, add, task_id)
 
-    save_to_file(M, m, add)
 
-
-def save_to_file(dataset, m, add):
+def save_to_file(dataset, m, add, task_id):
     print("SAVED")
-    if add:
-        filename = os.path.join(app.root_path, 'datasets', f'dataset-full-{m}.csv')
-    else:
-        filename = os.path.join(app.root_path, 'datasets', f'dataset-{m}.csv')
-    filename = f'dataset-handmade-diagonal-enhance-{m}.csv'
+    # if add:
+    #     filename = os.path.join(app.root_path, 'datasets', f'dataset-full-{m}.csv')
+    # else:
+    #     filename = os.path.join(app.root_path, 'datasets', f'dataset-{m}.csv')
+    filename = os.path.join(app.root_path, 'datasets', f'dataset_{task_id}.csv')
+    #filename = f'dataset-handmade-diagonal-enhance-{m}.csv'
     with open(filename, 'w', newline='') as output:
         writer = csv.writer(output, delimiter=';')
         for row in dataset:
-            inserting_row = row['beta_A'] + row['beta_B'] + [row['d'], row['a']]
+            inserting_row = row['beta_A'] + row['beta_B'] + [row['rObj'], row['fiObj']]
             if add:
                 #inserting_row += [row['r'], row['fi']]
                 inserting_row += [row['r'], row['fi'], row['rObj'], row['fiObj'], row['gObj'], row['xObj'], row['yObj'], row['h'], row['l']]

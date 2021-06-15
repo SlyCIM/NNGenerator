@@ -1,10 +1,11 @@
 from app import app, db
 from app.models import Task
-from flask import render_template, redirect, flash, jsonify
+from flask import render_template, redirect, flash, jsonify, send_from_directory
 from app.forms import GeneratorForm
 from app import utils
 from threading import Thread
 import math
+import os
 
 
 @app.route("/")
@@ -146,7 +147,7 @@ def generator_page():
         if gamma <= 0:
             flash('"gamma" must be positive real number', 'gamma')
             return render_template("generator_page.html", title="Generator - Generation", form=form)
-        task = Task(produced=0, target=n, dataset_size=m)
+        task = Task(produced=0, target=n, dataset_size=m, dataset_filename='')
         db.session.add(task)
         db.session.commit()
         thread = Thread(target=utils.generate, args=(h, l, m, n, r_min, r_max, fi_min, fi_max, g_min, g_max, lambd,
@@ -164,4 +165,11 @@ def progress(task_id):
 @app.route('/task_info/<task_id>')
 def get_task_info(task_id):
     task = Task.query.get(task_id)
-    return jsonify({'produced': task.produced, 'target': task.target, 'dataset_size': task.dataset_size})
+    return jsonify({'produced': task.produced, 'target': task.target, 'dataset_size': task.dataset_size,
+                    'task_id': task.id})
+
+
+@app.route('/dataset/<task_id>')
+def get_dataset(task_id):
+    path = os.path.join(app.root_path, 'datasets')
+    return send_from_directory(path, filename=f'dataset_{task_id}.csv', as_attachment=True)
