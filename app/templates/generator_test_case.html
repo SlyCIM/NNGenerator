@@ -4,6 +4,28 @@
     <div class="flex-bar">
         <div class="tab">
             <div class="input_group">
+                <span>{{form.x_start.label}}</span>
+                {{form.x_start(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["x_start"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="input_group">
+                <span>{{form.y_start.label}}</span>
+                {{form.y_start(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["y_start"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="input_group">
                 <span>{{form.h.label}}</span>
                 {{form.h(class_="generator_input")}}
                 {% with errors = get_flashed_messages(category_filter=["h"]) %}
@@ -25,60 +47,12 @@
                 {% endif %}
                 {% endwith %}
             </div>
-            <div class="input_group">
-                <span>{{form.g_min.label}}</span>
-                {{form.g_min(class_="generator_input")}}
-                {% with errors = get_flashed_messages(category_filter=["g_min"]) %}
-                {% if errors %}
-                {% for msg in errors %}
-                <span class="error_label">{{ msg }}</span>
-                {% endfor -%}
-                {% endif %}
-                {% endwith %}
-            </div>
-            <div class="input_group">
-                <span>{{form.g_max.label}}</span>
-                {{form.g_max(class_="generator_input")}}
-                {% with errors = get_flashed_messages(category_filter=["g_max"]) %}
-                {% if errors %}
-                {% for msg in errors %}
-                <span class="error_label">{{ msg }}</span>
-                {% endfor -%}
-                {% endif %}
-                {% endwith %}
-            </div>
-            <div class="input_group">
-                <span>{{form.fi_min.label}}</span>
-                {{form.fi_min(class_="generator_input")}}
-                {% with errors = get_flashed_messages(category_filter=["fi_min"]) %}
-                {% if errors %}
-                {% for msg in errors %}
-                <span class="error_label">{{ msg }}</span>
-                {% endfor -%}
-                {% endif %}
-                {% endwith %}
-            </div>
-            <div class="input_group">
-                <span>{{form.fi_max.label}}</span>
-                {{form.fi_max(class_="generator_input")}}
-                {% with errors = get_flashed_messages(category_filter=["fi_max"]) %}
-                {% if errors %}
-                {% for msg in errors %}
-                <span class="error_label">{{ msg }}</span>
-                {% endfor -%}
-                {% endif %}
-                {% endwith %}
-            </div>
         </div>
         <div class="tab">
             <div class="input_group">
-                <span>{{form.object_on_y_axis.label}}</span>
-                {{form.object_on_y_axis()}}
-            </div>
-            <div class="input_group">
-                <span>{{form.r_min.label}}</span>
-                {{form.r_min(class_="generator_input")}}
-                {% with errors = get_flashed_messages(category_filter=["r_min"]) %}
+                <span>{{form.x_end.label}}</span>
+                {{form.x_end(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["x_end"]) %}
                 {% if errors %}
                 {% for msg in errors %}
                 <span class="error_label">{{ msg }}</span>
@@ -87,9 +61,9 @@
                 {% endwith %}
             </div>
             <div class="input_group">
-                <span>{{form.r_max.label}}</span>
-                {{form.r_max(class_="generator_input")}}
-                {% with errors = get_flashed_messages(category_filter=["r_max"]) %}
+                <span>{{form.y_end.label}}</span>
+                {{form.y_end(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["y_end"]) %}
                 {% if errors %}
                 {% for msg in errors %}
                 <span class="error_label">{{ msg }}</span>

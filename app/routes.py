@@ -1,7 +1,7 @@
 from app import app, db
 from app.models import Task
 from flask import render_template, redirect, flash, jsonify, send_from_directory
-from app.forms import GeneratorForm
+from app.forms import GeneratorForm, GeneratorTestCaseForm
 from app import utils
 from threading import Thread
 import math
@@ -67,9 +67,6 @@ def generator_page():
         if g_max < g_min:
             flash('"g_max" must be more than "g_min"', 'g_max')
             return render_template("generator_page.html", title="Generator - Generation", form=form)
-        if form.fix_g.data:
-            g_min = 2
-            g_max = 4
 
         try:
             fi_min = float(form.fi_min.data)
@@ -129,32 +126,100 @@ def generator_page():
         if n <= 0:
             flash('"m" must be positive integer number', 'n')
             return render_template("generator_page.html", title="Generator - Generation", form=form)
-
-        try:
-            lambd = float(form.lambd.data)
-        except ValueError:
-            flash('"lambd" must be real number', 'lambd')
-            return render_template("generator_page.html", title="Generator - Generation", form=form)
-        if lambd <= 0:
-            flash('"lambd" must be positive real number', 'lambd')
-            return render_template("generator_page.html", title="Generator - Generation", form=form)
-
-        try:
-            gamma = float(form.gamma.data)
-        except ValueError:
-            flash('"gamma" must be real number', 'gamma')
-            return render_template("generator_page.html", title="Generator - Generation", form=form)
-        if gamma <= 0:
-            flash('"gamma" must be positive real number', 'gamma')
-            return render_template("generator_page.html", title="Generator - Generation", form=form)
         task = Task(produced=0, target=n, dataset_size=m, dataset_filename='')
         db.session.add(task)
         db.session.commit()
-        thread = Thread(target=utils.generate, args=(h, l, m, n, r_min, r_max, fi_min, fi_max, g_min, g_max, lambd,
-                                                     gamma, task.id, form.add.data))
+        thread = Thread(target=utils.generate, args=(h, l, m, n, r_min, r_max, fi_min, fi_max, g_min, g_max, task.id))
         thread.start()
         return redirect(f'/progress/{task.id}')
     return render_template("generator_page.html", title="Generator - Generation", form=form)
+
+
+@app.route('/generate_test_case', methods=['GET', 'POST'])
+def generator_test_case():
+    form = GeneratorTestCaseForm()
+    if form.validate_on_submit():
+        try:
+            h = float(form.h.data)
+        except ValueError:
+            flash('"h" must be real number', 'h')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if h <= 0:
+            flash('"h" must be positive real number', 'h')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            l = float(form.l.data)
+        except ValueError:
+            flash('"l" must be real number', 'l')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if l <= 0:
+            flash('"l" must be positive real number', 'l')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if l >= h:
+            flash('"l" must be less than "h"')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            m = int(form.m.data)
+        except ValueError:
+            flash('"m" must be integer number', 'm')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if m <= 3:
+            flash('"m" must be more than 3', 'm')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            x_start = float(form.x_start.data)
+        except ValueError:
+            flash('"x_start" must be real number', 'x_start')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            y_start = float(form.y_start.data)
+        except ValueError:
+            flash('"y_start" must be real number', 'y_start')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if y_start < 0:
+            flash('"y_start" must be positive real number', 'y_start')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            x_end = float(form.x_end.data)
+        except ValueError:
+            flash('"x_end" must be real number', 'x_end')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            y_end = float(form.y_end.data)
+        except ValueError:
+            flash('"y_end" must be real number', 'y_end')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if y_end <= 0:
+            flash('"y_end" must be positive real number', 'y_end')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if y_end == y_start:
+            flash('"y_end" and "y_start" must be different', 'y_end')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if x_end == x_start:
+            flash('"x_end" and "x_start" must be different', 'x_end')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+
+        try:
+            n = int(form.n.data)
+        except ValueError:
+            flash('"n" must be integer number', 'n')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        if n <= 0:
+            flash('"m" must be positive integer number', 'n')
+            return render_template("generator_test_case.html", title="Generator - Generation", form=form)
+        task = Task(produced=0, target=n, dataset_size=m, dataset_filename='')
+        db.session.add(task)
+        db.session.commit()
+        thread = Thread(target=utils.generate_test_case, args=(h, l, m, n, x_start, x_end, y_start, y_end, task.id))
+        thread.start()
+        return redirect(f'/progress/{task.id}')
+    return render_template("generator_test_case.html", title="Generator - Generation", form=form)
 
 
 @app.route('/progress/<task_id>')
