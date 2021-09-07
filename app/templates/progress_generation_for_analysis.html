@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block js %}
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script src="{{url_for('static', filename='js/progress_for_analysis.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="main_menu" ng-app="app" ng-controller="ctrl" ng-init="start_progress({{task_id}});">
+    {% raw %}
+        <span class="info_label" ng-show="!in_progress" ng-cloak>Dataset generation finished</span>
+    {% endraw %}
+    <br>
+    <div ng-show="in_progress" style="width:100%;" ng-cloak>
+        <div class="loading_bar">
+            <div class="bar" id="bar"></div>
+        </div>
+        {% raw %}
+        <p class="pic">Generated: <span id="generated" class="ff-color">{{produced}}</span> / <span id="target"
+                                                                                                       class="ff-color">{{target}}</span>
+        </p>
+        {% endraw %}
+    </div>
+</div>
+{% endblock %}

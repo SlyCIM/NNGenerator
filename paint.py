@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from tqdm import tqdm
 
 
 class Visualizer:

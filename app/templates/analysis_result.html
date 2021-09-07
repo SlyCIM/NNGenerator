@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="main_menu">
+    <form method="post" enctype="multipart/form-data">
+        <p>Выберите директорию с соответствующими наборами данных</p>
+        <input type="file" name="file[]" class="input" id="ctrl" webkitdirectory directory multiple/>
+        <button class="menu_btn">Подтвердить</button>
+    </form>
+</div>
+{% if im_path %}
+<div class="flex-bar">
+    <div class="tab" style="width: 80%;display: flex;justify-content: center;">
+        <img class="analysis_img" src="{{url_for('static', filename='analysis_images/' + im_path)}}">
+    </div>
+    <div class="tab" style="width: 20%;display: flex; flex-direction: column;">
+        <h3>Информация о датасете</h3>
+        {% for item in meta_dict %}
+            <p><b>{{item}}</b>: {{meta_dict[item]}}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

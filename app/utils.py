@@ -3,8 +3,11 @@ import numpy as np
 import csv
 import os
 from app import app, db
-from flask import flash
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from app.models import Task
+from time import sleep
 
 
 def randomize(rMin, rMax, fiMin, fiMax, gMin, gMax):
@@ -80,7 +83,7 @@ def generate_usual_way(h, l, m, n, rMin, rMax, fiMin, fiMax, gMin, gMax, task_id
         beta_B = [0] * m
         flag = False
         while not flag:
-            xObj, yObj, gObj, fiObj, rObj = randomize(rMin, rMax, fiMin, fiMax, gMin, gMax, precedents, h)
+            xObj, yObj, gObj, fiObj, rObj = randomize(rMin, rMax, fiMin, fiMax, gMin, gMax)
             if not valid(xObj, yObj, gObj, h, l):
                 continue
             L_a, R_a, L_b, R_b = count(xObj, yObj, h, gObj, m)
@@ -140,3 +143,147 @@ def save_to_file(dataset, task_id):
             inserting_row = row['beta_A'] + row['beta_B'] + [row['rObj'], row['fiObj'], row['gObj'], row['xObj'],
                                                              row['yObj'], row['h'], row['l']]
             writer.writerow(inserting_row)
+
+
+def get_dataset(m, h, l, n, rMin, rMax, fiMin, fiMax, gMin, gMax, task_id):
+    M = []
+    precedents = 0
+    while precedents < n:
+        beta_A = [0] * m
+        beta_B = [0] * m
+        flag = False
+        while not flag:
+            xObj, yObj, gObj, fiObj, rObj = randomize(rMin, rMax, fiMin, fiMax, gMin, gMax)
+            if not valid(xObj, yObj, gObj, h, l):
+                continue
+            L_a, R_a, L_b, R_b = count(xObj, yObj, h, gObj, m)
+            flag = L_a != R_a
+        precedents += 1
+        Task.query.get(task_id).produced += 1
+        db.session.commit()
+        for j in range(L_a, R_a + 1):
+            beta_A[j] = 1
+        for j in range(L_b, R_b + 1):
+            beta_B[j] = 1
+        M.append({'beta_A': beta_A, 'beta_B': beta_B, 'rObj': rObj, 'fiObj': fiObj,
+                  'gObj': gObj, 'xObj': xObj, 'yObj': yObj})
+    return M
+
+
+def generate_const_g_diff_m(h, l, n, rMin, rMax, fiMin, fiMax, item_list, tasks):
+    for task in tasks:
+        for g in item_list:
+            M = get_dataset(m=task['diff_item'], h=h, l=l, n=n, rMin=rMin, rMax=rMax, fiMin=fiMin, fiMax=fiMax, gMin=g,
+                            gMax=g, task_id=task['id'])
+            save_to_file_special(dataset_name=f'g_const_{g}_m_diff_{task["diff_item"]}',
+                                 dataset_folder='g_const_m_diff', dataset=M, h=h, l=l,
+                                 m=task['diff_item'], g_min=g, g_max=g, fi_min=fiMin, fi_max=fiMax, r_min=rMin,
+                                 r_max=rMax, n=n)
+
+
+def generate_const_g_diff_h(m, l, n, rMin, rMax, fiMin, fiMax, item_list, tasks):
+    for task in tasks:
+        for g in item_list:
+            M = get_dataset(m=m, h=task['diff_item'], l=l, n=n, rMin=rMin, rMax=rMax, fiMin=fiMin, fiMax=fiMax, gMin=g,
+                            gMax=g, task_id=task['id'])
+            save_to_file_special(dataset_name=f'g_const_{g}_h_diff_{task["diff_item"]}',
+                                 dataset_folder='g_const_h_diff', dataset=M, h=task['diff_item'], l=l,
+                                 m=m, g_min=g, g_max=g, fi_min=fiMin, fi_max=fiMax, r_min=rMin, r_max=rMax, n=n)
+
+
+def generate_const_g_diff_l(m, h, n, rMin, rMax, fiMin, fiMax, item_list, tasks):
+    for task in tasks:
+        for g in item_list:
+            M = get_dataset(m=m, h=h, l=task['diff_item'], n=n, rMin=rMin, rMax=rMax, fiMin=fiMin, fiMax=fiMax, gMin=g,
+                            gMax=g, task_id=task['id'])
+            save_to_file_special(dataset_name=f'g_const_{g}_h_diff_{task["diff_item"]}',
+                                 dataset_folder='g_const_h_diff', dataset=M, h=h, l=task['diff_item'],
+                                 m=m, g_min=g, g_max=g, fi_min=fiMin, fi_max=fiMax, r_min=rMin, r_max=rMax, n=n)
+
+
+def generate_const_g_diff_r(m, l, n, rMin, h, fiMin, fiMax, item_list, tasks):
+    for task in tasks:
+        for g in item_list:
+            M = get_dataset(m=m, h=h, l=l, n=n, rMin=rMin, rMax=task['diff_item'], fiMin=fiMin, fiMax=fiMax, gMin=g,
+                            gMax=g, task_id=task['id'])
+            save_to_file_special(dataset_name=f'g_const_{g}_h_diff_{task["diff_item"]}',
+                                 dataset_folder='g_const_h_diff', dataset=M, h=h, l=l, m=m,
+                                 g_min=g, g_max=g, fi_min=fiMin, fi_max=fiMax, r_min=rMin, r_max=task['diff_item'], n=n)
+
+
+def save_to_file_special(dataset_name, dataset_folder, dataset, h, l, m, g_min, g_max, fi_min, fi_max, r_min, r_max, n):
+    path = os.path.join(app.root_path, 'datasets', dataset_folder)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    filename = os.path.join(path, dataset_name)
+    with open(filename, 'w', newline='') as output:
+        writer = csv.writer(output, delimiter=';')
+        meta_row = [h, l, m, g_min, g_max, fi_min, fi_max, r_min, r_max, n]
+        writer.writerow(meta_row)
+        for row in dataset:
+            inserting_row = row['beta_A'] + row['beta_B'] + [row['rObj'], row['fiObj'], row['gObj'], row['xObj'],
+                                                             row['yObj']]
+            writer.writerow(inserting_row)
+
+
+def save_files(uploaded_files):
+    counter = len([name for name in os.listdir(os.path.join(app.root_path, 'uploads')) if not os.path.isfile(name)])
+    path = os.path.join(app.root_path, 'uploads', str(counter + 1))
+    os.makedirs(path)
+    for file in uploaded_files:
+        filename = file.filename
+        if len(file.filename.split('/')) > 1:
+            filename = file.filename.split('/')[-1]
+        if len(file.filename.split('\\')) > 1:
+            filename = file.filename.split('\\')[-1]
+        file.save(os.path.join(path, f'{filename}.csv'))
+    return path
+
+
+def count_repeats(dataset_path, m):
+    repeats = {}
+    with open(dataset_path) as file:
+        reader = csv.reader(file, delimiter=';')
+        meta_info = next(reader)
+        for row in reader:
+            mask = tuple(row[:2 * m])
+            if mask in repeats:
+                repeats[mask] += 1
+            else:
+                repeats[mask] = 1
+    return sum(repeats[mask] for mask in repeats) - len(repeats), meta_info
+
+
+def make_plot(uploaded_files, const_item_name, diff_item_name, xlabel_legend, ylabel_legend):
+    filepath = save_files(uploaded_files)
+    results = {}
+    meta_info = []
+    for file in os.listdir(filepath):
+        components = file[:-4].split('_')
+        const_item = int(components[2])
+        diff_item = int(components[-1])
+        repeats, meta_info = count_repeats(os.path.join(filepath, file), diff_item)
+        if const_item in results:
+            results[const_item][diff_item_name].append(diff_item)
+            results[const_item]['repeats'].append(repeats)
+        else:
+            results[const_item] = {diff_item_name: [diff_item], 'repeats': [repeats]}
+    fig, ax = plt.subplots(figsize=(10, 10), dpi=100)
+    for const_item in results:
+        diff_items = results[const_item][diff_item_name]
+        repeats = results[const_item]['repeats']
+        x = zip(diff_items, repeats)
+        xs = sorted(x, key=lambda tup: tup[0])
+        diff_items = [x[0] for x in xs]
+        repeats = [x[1] for x in xs]
+        ax.plot(diff_items, repeats, linewidth=3, label=f'{const_item_name} = {const_item}', marker='o')
+    ax.grid()
+    plt.xlabel(xlabel_legend)
+    plt.ylabel(ylabel_legend)
+    plt.legend()
+    counter = len([name for name in os.listdir(os.path.join(app.root_path, 'static', 'analysis_images'))])
+    im_path = os.path.join(app.root_path, 'static', 'analysis_images', f'{counter + 1}.png')
+    plt.savefig(im_path)
+    plt.clf()
+    plt.close()
+    return f'{counter + 1}.png', meta_info

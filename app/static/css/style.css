@@ -32,7 +32,7 @@ header{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    /*align-items: center;*/
     margin-top: 5vh;
 }
 
@@ -46,6 +46,15 @@ header{
     margin-bottom: 50px;
     font-size: 1.5rem;
     cursor: pointer;
+    text-align: center;
+}
+
+.input{
+    text-decoration: none;
+    padding: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    text-align: center;
 }
 
 .menu_btn:hover{
@@ -110,4 +119,8 @@ header{
 
 .tab{
     width:48%;
+}
+
+.analysis_img{
+    margin-top: -50px;
 }

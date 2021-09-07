@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="main_menu" method="post">
+    <div class="flex-bar">
+        <div class="tab">
+            <div class="input_group">
+                <span>{{form.h.label}}</span>
+                {{form.h(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["h"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="input_group">
+                <span>{{form.l.label}}</span>
+                {{form.l(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["l"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="input_group">
+                <span>{{form.fi_min.label}}</span>
+                {{form.fi_min(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["fi_min"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="input_group">
+                <span>{{form.fi_max.label}}</span>
+                {{form.fi_max(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["fi_max"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="tab">
+            <div class="input_group">
+                <span>{{form.r_min.label}}</span>
+                {{form.r_min(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["r_min"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="input_group">
+                <span>{{form.r_max.label}}</span>
+                {{form.r_max(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["r_max"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div class="input_group">
+                <span>{{form.n.label}}</span>
+                {{form.n(class_="generator_input")}}
+                {% with errors = get_flashed_messages(category_filter=["n"]) %}
+                {% if errors %}
+                {% for msg in errors %}
+                <span class="error_label">{{ msg }}</span>
+                {% endfor -%}
+                {% endif %}
+                {% endwith %}
+            </div>
+
+        </div>
+    </div>
+    <hr style="width:50%;margin-bottom:50px;">
+    <div class="flex-bar">
+        <div class="tab" style="margin-right:50px;">
+            <div class="input_group">
+                <span>g1</span>
+                <input class="generator_input" id="g1" name="g1" type="text" value="10">
+            </div>
+        </div>
+        <div class="tab" style="margin-right:50px;">
+            <div class="input_group">
+                <span>g2</span>
+                <input class="generator_input" id="g2" name="g2" type="text" value="100">
+            </div>
+        </div>
+        <div class="tab">
+            <div class="input_group">
+                <span>g3</span>
+                <input class="generator_input" id="g3" name="g3" type="text" value="200">
+            </div>
+        </div>
+    </div>
+
+
+    <hr style="width:50%;margin-top:50px;margin-bottom:50px;">
+    <div class="flex-bar">
+        <div class="tab" style="margin-right:50px;">
+            <div class="input_group">
+                <span><b>m</b> start value</span>
+                <input class="generator_input" id="m_start" name="m_start" type="text" value="100">
+            </div>
+        </div>
+        <div class="tab" style="margin-right:50px;">
+            <div class="input_group">
+                <span><b>m</b> finish value</span>
+                <input class="generator_input" id="m_finish" name="m_finish" type="text" value="1000">
+            </div>
+        </div>
+        <div class="tab">
+            <div class="input_group">
+                <span><b>m</b> step</span>
+                <input class="generator_input" id="m_step" name="m_step" type="text" value="100">
+            </div>
+        </div>
+    </div>
+
+    <button class="menu_btn">Start</button>
+</form>
+{% endblock %}
