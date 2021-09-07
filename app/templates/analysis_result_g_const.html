@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="main_menu" method="post" enctype="multipart/form-data">
+        <p>Датасеты с варьируюмщися числом омматидиев</p>
+        <input type="file" name="file1[]" class="input" webkitdirectory directory multiple/>
+    <p>Датасеты с варьируюмщися расстоянием между глазами</p>
+        <input type="file" name="file2[]" class="input"  webkitdirectory directory multiple/>
+    <p>Датасеты с варьируюмщися радиусом глаза</p>
+        <input type="file" name="file3[]" class="input" webkitdirectory directory multiple/>
+    <p>Датасеты с варьируюмщися расстоянием до объекта</p>
+        <input type="file" name="file4[]" class="input" webkitdirectory directory multiple/>
+        <button class="menu_btn">Подтвердить</button>
+</form>
+{% if im_path1 or im_path2 or im_path3 or im_path4 %}
+<div class="flex-bar">
+    <div class="tab" style="width: 80%;display: flex; flex-direction: column;">
+        {% if im_path1 %}
+        <img class="analysis_img" src="{{url_for('static', filename='analysis_images/' + im_path1)}}">
+        {% endif %}
+        {% if im_path2 %}
+        <img class="analysis_img" src="{{url_for('static', filename='analysis_images/' + im_path2)}}">
+        {% endif %}
+        {% if im_path3 %}
+        <img class="analysis_img" src="{{url_for('static', filename='analysis_images/' + im_path3)}}">
+        {% endif %}
+        {% if im_path4 %}
+        <img class="analysis_img" src="{{url_for('static', filename='analysis_images/' + im_path4)}}">
+        {% endif %}
+
+    </div>
+    <div class="tab" style="width: 20%;display: flex; flex-direction: column;">
+        <h3>Информация о датасетах</h3>
+        {% for item in meta_dict %}
+            <p><b>{{item}}</b>: {{meta_dict[item]}}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

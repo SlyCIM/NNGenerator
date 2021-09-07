@@ -18,11 +18,39 @@ def analysis():
     return render_template("analysis.html", title="Generator - Analysis")
 
 
+@app.route("/analysis_g_const", methods=['GET', 'POST'])
+def analysis_g_const():
+    if request.method == 'POST':
+        im_path1, im_path2, im_path3, im_path4 = None, None, None, None
+        uploaded_files = request.files.getlist("file1[]")
+        if uploaded_files:
+            im_path1, meta_info = utils.make_plot(uploaded_files, 'g', 'm', "Число омматидиев", "Число коллизий")
+        uploaded_files = request.files.getlist("file2[]")
+        if uploaded_files:
+            im_path2, meta_info = utils.make_plot(uploaded_files, 'g', 'h', "Расстояние между глазами", "Число коллизий")
+        uploaded_files = request.files.getlist("file3[]")
+        if uploaded_files:
+            im_path3, meta_info = utils.make_plot(uploaded_files, 'g', 'l', "Радиус глаза", "Число коллизий")
+        uploaded_files = request.files.getlist("file4[]")
+        if uploaded_files:
+            im_path4, meta_info = utils.make_plot(uploaded_files, 'g', 'rMax', "Максимальное расстояние до объекта",
+                                             "Число коллизий")
+        meta_dict = {}
+        if meta_info:
+            meta_dict = {'gObj': f'{meta_info[3]}..{meta_info[4]}',
+                         'fiObj': f'{meta_info[5]}..{meta_info[6]}',
+                         'rObj': f'{meta_info[7]}..{meta_info[8]}' if not im_path4 else f'{meta_info[7]}..',
+                         'n': meta_info[9]}
+        return render_template("analysis_result_g_const.html", title="Generator - Analysis", im_path1=im_path1,
+                               im_path2=im_path2, im_path3=im_path3, im_path4=im_path4, meta_dict=meta_dict)
+    return render_template("analysis_result_g_const.html", title="Generator - Analysis")
+
+
 @app.route("/analysis_g_const_m_diff", methods=['GET', 'POST'])
 def analysis_g_const_m_diff():
     if request.method == 'POST':
         uploaded_files = request.files.getlist("file[]")
-        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'm', "Число омматидиев", "Число повторов")
+        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'm', "Число омматидиев", "Число коллизий")
         meta_dict = {}
         if meta_info:
             meta_dict = {'h': meta_info[0], 'l': meta_info[1], 'gObj': f'{meta_info[3]}..{meta_info[4]}',
@@ -37,7 +65,7 @@ def analysis_g_const_m_diff():
 def analysis_g_const_h_diff():
     if request.method == 'POST':
         uploaded_files = request.files.getlist("file[]")
-        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'h', "Расстояние между глазами", "Число повторов")
+        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'h', "Расстояние между глазами", "Число коллизий")
         meta_dict = {}
         if meta_info:
             meta_dict = {'l': meta_info[1],'m': meta_info[2], 'gObj': f'{meta_info[3]}..{meta_info[4]}',
@@ -52,7 +80,7 @@ def analysis_g_const_h_diff():
 def analysis_g_const_l_diff():
     if request.method == 'POST':
         uploaded_files = request.files.getlist("file[]")
-        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'l', "Радиус глаза", "Число повторов")
+        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'l', "Радиус глаза", "Число коллизий")
         meta_dict = {}
         if meta_info:
             meta_dict = {'h': meta_info[0], 'm': meta_info[2], 'gObj': f'{meta_info[3]}..{meta_info[4]}',
@@ -67,7 +95,8 @@ def analysis_g_const_l_diff():
 def analysis_g_const_r_diff():
     if request.method == 'POST':
         uploaded_files = request.files.getlist("file[]")
-        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'rMax', "Максимальное расстояние до объекта", "Число повторов")
+        im_path, meta_info = utils.make_plot(uploaded_files, 'g', 'rMax', "Максимальное расстояние до объекта",
+                                             "Число коллизий")
         meta_dict = {}
         if meta_info:
             meta_dict = {'h': meta_info[0], 'l': meta_info[1], 'm':meta_info[2], 'gObj': f'{meta_info[3]}..{meta_info[4]}',
@@ -111,7 +140,7 @@ def g_const_m_diff():
     return render_template("g_const_m_diff.html", title="Generator - Generate for analysis", form=form)
 
 
-@app.route("/g_const_l_diff")
+@app.route("/g_const_l_diff", methods=['GET', 'POST'])
 def g_const_l_diff():
     form = GeneratorForm()
     if form.validate_on_submit():
@@ -142,7 +171,7 @@ def g_const_l_diff():
     return render_template("g_const_l_diff.html", title="Generator - Generate for analysis", form=form)
 
 
-@app.route("/g_const_h_diff")
+@app.route("/g_const_h_diff", methods=['GET', 'POST'])
 def g_const_h_diff():
     form = GeneratorForm()
     if form.validate_on_submit():
@@ -173,7 +202,7 @@ def g_const_h_diff():
     return render_template("g_const_h_diff.html", title="Generator - Generate for analysis", form=form)
 
 
-@app.route("/g_const_r_diff")
+@app.route("/g_const_r_diff", methods=['GET', 'POST'])
 def g_const_r_diff():
     form = GeneratorForm()
     if form.validate_on_submit():

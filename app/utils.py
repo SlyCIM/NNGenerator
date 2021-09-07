@@ -196,8 +196,8 @@ def generate_const_g_diff_l(m, h, n, rMin, rMax, fiMin, fiMax, item_list, tasks)
         for g in item_list:
             M = get_dataset(m=m, h=h, l=task['diff_item'], n=n, rMin=rMin, rMax=rMax, fiMin=fiMin, fiMax=fiMax, gMin=g,
                             gMax=g, task_id=task['id'])
-            save_to_file_special(dataset_name=f'g_const_{g}_h_diff_{task["diff_item"]}',
-                                 dataset_folder='g_const_h_diff', dataset=M, h=h, l=task['diff_item'],
+            save_to_file_special(dataset_name=f'g_const_{g}_l_diff_{task["diff_item"]}',
+                                 dataset_folder='g_const_l_diff', dataset=M, h=h, l=task['diff_item'],
                                  m=m, g_min=g, g_max=g, fi_min=fiMin, fi_max=fiMax, r_min=rMin, r_max=rMax, n=n)
 
 
@@ -206,8 +206,8 @@ def generate_const_g_diff_r(m, l, n, rMin, h, fiMin, fiMax, item_list, tasks):
         for g in item_list:
             M = get_dataset(m=m, h=h, l=l, n=n, rMin=rMin, rMax=task['diff_item'], fiMin=fiMin, fiMax=fiMax, gMin=g,
                             gMax=g, task_id=task['id'])
-            save_to_file_special(dataset_name=f'g_const_{g}_h_diff_{task["diff_item"]}',
-                                 dataset_folder='g_const_h_diff', dataset=M, h=h, l=l, m=m,
+            save_to_file_special(dataset_name=f'g_const_{g}_r_diff_{task["diff_item"]}',
+                                 dataset_folder='g_const_r_diff', dataset=M, h=h, l=l, m=m,
                                  g_min=g, g_max=g, fi_min=fiMin, fi_max=fiMax, r_min=rMin, r_max=task['diff_item'], n=n)
 
 
