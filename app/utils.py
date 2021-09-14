@@ -262,7 +262,7 @@ def make_plot(uploaded_files, const_item_name, diff_item_name, xlabel_legend, yl
     for file in os.listdir(filepath):
         components = file[:-4].split('_')
         const_item = int(components[2])
-        diff_item = int(components[-1])
+        diff_item = int(components[-1].split('.')[0])
         repeats, meta_info = count_repeats(os.path.join(filepath, file), diff_item)
         if const_item in results:
             results[const_item][diff_item_name].append(diff_item)
