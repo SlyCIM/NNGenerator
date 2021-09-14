@@ -133,7 +133,8 @@ def g_const_m_diff():
             db.session.add(task)
             db.session.commit()
             tasks.append({'id': task.id, 'diff_item': task.dataset_size})
-        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3'))]
+        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3')),
+                  int(request.form.get('g4')), int(request.form.get('g5')), int(request.form.get('g6'))]
         thread = Thread(target=utils.generate_const_g_diff_m, args=(h, l, n, r_min, r_max, fi_min, fi_max, g_list, tasks))
         thread.start()
         return redirect(f'/progress_generation_for_analysis/{an_task.id}')
@@ -144,7 +145,7 @@ def g_const_m_diff():
 def g_const_l_diff():
     form = GeneratorForm()
     if form.validate_on_submit():
-        m = int(form.h.data)
+        m = int(form.m.data)
         h = float(form.h.data)
         fi_min = float(form.fi_min.data)
         fi_max = float(form.fi_max.data)
@@ -163,7 +164,8 @@ def g_const_l_diff():
             db.session.add(task)
             db.session.commit()
             tasks.append({'id': task.id, 'diff_item': i})
-        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3'))]
+        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3')),
+                  int(request.form.get('g4')), int(request.form.get('g5')), int(request.form.get('g6'))]
         thread = Thread(target=utils.generate_const_g_diff_l,
                         args=(m, h, n, r_min, r_max, fi_min, fi_max, g_list, tasks))
         thread.start()
@@ -175,7 +177,7 @@ def g_const_l_diff():
 def g_const_h_diff():
     form = GeneratorForm()
     if form.validate_on_submit():
-        m = int(form.h.data)
+        m = int(form.m.data)
         l = float(form.l.data)
         fi_min = float(form.fi_min.data)
         fi_max = float(form.fi_max.data)
@@ -194,7 +196,8 @@ def g_const_h_diff():
             db.session.add(task)
             db.session.commit()
             tasks.append({'id': task.id, 'diff_item': i})
-        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3'))]
+        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3')),
+                  int(request.form.get('g4')), int(request.form.get('g5')), int(request.form.get('g6'))]
         thread = Thread(target=utils.generate_const_g_diff_h,
                         args=(m, l, n, r_min, r_max, fi_min, fi_max, g_list, tasks))
         thread.start()
@@ -206,7 +209,7 @@ def g_const_h_diff():
 def g_const_r_diff():
     form = GeneratorForm()
     if form.validate_on_submit():
-        m = int(form.h.data)
+        m = int(form.m.data)
         h = float(form.h.data)
         fi_min = float(form.fi_min.data)
         fi_max = float(form.fi_max.data)
@@ -225,7 +228,8 @@ def g_const_r_diff():
             db.session.add(task)
             db.session.commit()
             tasks.append({'id': task.id, 'diff_item': i})
-        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3'))]
+        g_list = [int(request.form.get('g1')), int(request.form.get('g2')), int(request.form.get('g3')),
+                  int(request.form.get('g4')), int(request.form.get('g5')), int(request.form.get('g6'))]
         thread = Thread(target=utils.generate_const_g_diff_r,
                         args=(m, l, n, r_min, h, fi_min, fi_max, g_list, tasks))
         thread.start()
@@ -473,7 +477,7 @@ def analysis_task_info(task_id):
     for task in Task.query.filter_by(analysis_id=main_task.id).all():
         produced += task.produced
         target += task.target
-    return jsonify({'produced': produced, 'target': target * 3, 'task_id': main_task.id})
+    return jsonify({'produced': produced, 'target': target * 6, 'task_id': main_task.id})
 
 
 @app.route('/dataset/<task_id>')
