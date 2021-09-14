@@ -215,7 +215,7 @@ def save_to_file_special(dataset_name, dataset_folder, dataset, h, l, m, g_min, 
     path = os.path.join(app.root_path, 'datasets', dataset_folder)
     if not os.path.exists(path):
         os.makedirs(path)
-    filename = os.path.join(path, dataset_name)
+    filename = os.path.join(path, dataset_name + '.csv')
     with open(filename, 'w', newline='') as output:
         writer = csv.writer(output, delimiter=';')
         meta_row = [h, l, m, g_min, g_max, fi_min, fi_max, r_min, r_max, n]
@@ -245,6 +245,7 @@ def count_repeats(dataset_path, m):
     with open(dataset_path) as file:
         reader = csv.reader(file, delimiter=';')
         meta_info = next(reader)
+        m = int(meta_info[2])
         for row in reader:
             mask = tuple(row[:2 * m])
             if mask in repeats:
