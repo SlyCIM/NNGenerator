@@ -294,3 +294,31 @@ def make_plot(uploaded_files, const_item_name, diff_item_name, xlabel_legend, yl
     plt.clf()
     plt.close()
     return f'{counter + 1}.png', meta_info
+
+
+def clean_dataset(uploaded_file):
+    filepath = save_files([uploaded_file])
+    repeats = {}
+    clear_dataset = []
+    for file in os.listdir(filepath):
+        with open(os.path.join(filepath, file)) as csv_file:
+            reader = csv.reader(csv_file, delimiter=';')
+            meta_info = next(reader)
+            clear_dataset.append(meta_info)
+            m = int(meta_info[2])
+            for row in reader:
+                mask = tuple(row[:2 * m])
+                if mask in repeats:
+                    repeats[mask] += 1
+                else:
+                    repeats[mask] = 1
+                    clear_dataset.append(row)
+
+    counter = len([name for name in os.listdir(os.path.join(app.root_path, 'datasets')) if os.path.isfile(name)])
+    path = os.path.join(app.root_path, 'datasets', f'clear_dataset_{str(counter + 1)}.csv')
+    with open(path, 'w') as file:
+        writer = csv.writer(file, delimiter=';')
+        for row in clear_dataset:
+            writer.writerow(row)
+    dataset_name = f'clear_dataset_{str(counter + 1)}.csv'
+    return dataset_name
