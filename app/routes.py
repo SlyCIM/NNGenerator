@@ -358,7 +358,7 @@ def generator_page():
         task = Task(produced=0, target=n, dataset_size=m, dataset_filename='')
         db.session.add(task)
         db.session.commit()
-        thread = Thread(target=utils.generate, args=(h, l, m, n, r_min, r_max, fi_min, fi_max, g_min, g_max, task.id))
+        thread = Thread(target=utils.generate_usual_way, args=(h, l, m, n, r_min, r_max, fi_min, fi_max, g_min, g_max, task.id))
         thread.start()
         return redirect(f'/progress/{task.id}')
     return render_template("generator_page.html", title="Generator - Generation", form=form)

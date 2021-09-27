@@ -97,7 +97,11 @@ def generate_usual_way(h, l, m, n, rMin, rMax, fiMin, fiMax, gMin, gMax, task_id
             beta_B[j] = 1
         M.append({'beta_A': beta_A, 'beta_B': beta_B, 'rObj': rObj, 'fiObj': fiObj,
                   'gObj': gObj, 'xObj': xObj, 'yObj': yObj, 'h': h, 'l': l})
-    save_to_file(M, task_id)
+    save_to_file_special(dataset_name=f'dataset_{task_id}',
+                         dataset_folder='usual_datasets', dataset=M, h=h, l=l,
+                         m=m, g_min=gMin, g_max=gMax, fi_min=fiMin, fi_max=fiMax, r_min=rMin,
+                         r_max=rMax, n=n)
+    #save_to_file(M, task_id)
 
 
 def generate_test_case(h, l, m, n, x_start, x_end, y_start, y_end, task_id):
@@ -215,7 +219,9 @@ def save_to_file_special(dataset_name, dataset_folder, dataset, h, l, m, g_min, 
     path = os.path.join(app.root_path, 'datasets', dataset_folder)
     if not os.path.exists(path):
         os.makedirs(path)
-    filename = os.path.join(path, dataset_name + '.csv')
+    if not '.csv' in dataset_name:
+        dataset_name = dataset_name + '.csv'
+    filename = os.path.join(path, dataset_name)
     with open(filename, 'w', newline='') as output:
         writer = csv.writer(output, delimiter=';')
         meta_row = [h, l, m, g_min, g_max, fi_min, fi_max, r_min, r_max, n]
