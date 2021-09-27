@@ -320,12 +320,12 @@ def generator_page():
         if fi_max > math.pi:
             flash('"fi_max" must be less than 3.14', 'fi_max')
             return render_template("generator_page.html", title="Generator - Generation", form=form)
-        if form.object_on_y_axis.data:
-            fi_min = math.pi / 2
-            fi_max = math.pi / 2
-        if form.fix_g.data:
-            fi_min = math.pi / 4
-            fi_max = math.pi - fi_min
+        # if form.object_on_y_axis.data:
+        #     fi_min = math.pi / 2
+        #     fi_max = math.pi / 2
+        # if form.fix_g.data:
+        #     fi_min = math.pi / 4
+        #     fi_max = math.pi - fi_min
         try:
             r_min = float(form.r_min.data)
         except ValueError:

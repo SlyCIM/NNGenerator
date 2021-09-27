@@ -98,7 +98,7 @@ def generate_usual_way(h, l, m, n, rMin, rMax, fiMin, fiMax, gMin, gMax, task_id
         M.append({'beta_A': beta_A, 'beta_B': beta_B, 'rObj': rObj, 'fiObj': fiObj,
                   'gObj': gObj, 'xObj': xObj, 'yObj': yObj, 'h': h, 'l': l})
     save_to_file_special(dataset_name=f'dataset_{task_id}',
-                         dataset_folder='usual_datasets', dataset=M, h=h, l=l,
+                         dataset_folder='', dataset=M, h=h, l=l,
                          m=m, g_min=gMin, g_max=gMax, fi_min=fiMin, fi_max=fiMax, r_min=rMin,
                          r_max=rMax, n=n)
     #save_to_file(M, task_id)
